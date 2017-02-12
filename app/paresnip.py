@@ -3,7 +3,7 @@ import datetime, json
 from flask import Flask
 from flask import jsonify, request, json
 from pyflock import FlockClient, verify_event_token
-from pyflock import Message, SendAs
+from pyflock import Message, SendAs, Views, HtmlView, Attachment
 from haralyzer import HarParser, HarPage
 
 
@@ -27,8 +27,12 @@ flock_client = FlockClient(token=flock_secret, app_id=flock_key)
 
 # flock_client = FlockClient(token='', app_id='bca434b5-8727-4661-846f-efc3d0d84af5')
 
-def msg_send(msg, client):
-    simple_message = Message(to='u:0zhuh09zwttmuwhx',text=msg)
+def msg_send(usr, msg, client):
+    views = Views()
+    views.add_flockml('<flockml>{0}<\flockml>'.format(msg))
+    
+    attachment = Attachment(title="Deploy Test Results", description="", views=views)    
+    simple_message = Message(to=usr, attachments=[attachment])
     # returns a message id
     res = flock_client.send_chat(simple_message)
     print(res)
@@ -89,7 +93,7 @@ def check_locations(file):
 
   for tag in js_tags:
     if not (body_tags[0] < tag < body_tags[-1]):
-      location_errors.append({'location': file_lines[tag], 'message': 'JS tags should be placed at the end of the body.'})
+      location_errors.append({'location': file_lines[tag], 'message': 'JS <b>script</b> tags should be placed at the end of the <b>body</b> tag.'})
 
   location_errors += check_repeats(file_lines, css_tags)
   location_errors += check_repeats(file_lines, js_tags)
@@ -127,22 +131,21 @@ def process():
     msg = ''
     resp = request.data
     data =  json.loads(resp)
+    user =''
+    print data
     report = None
     errmsg = {"text":""}
     if data.has_key('text'):
         if data['text'].lower() == 'deploy':
-            # msg = {"text":"Parsenip App Deployment Process Started."}
-            # Run the Check against the HAR file
-            # On Error post back to Flock with error
-
+            user = data['userId']
             # File Check
             report = check_har('/bad.har')
             for r in report:
                 if type(r) == dict:
                     m = r['message']
-                    l = str(r['location'])
-                    msg += '<flockml><b>Issue Detected:</b> {0} <br> <b>Detail:</b> {1}<br></flockml'.format(m,l)
-            msg_send(msg,flock_client)
+                    l = str(r['location']).strip()
+                    msg = '<b>Issue Detected:</b> {0} <b>Detail:</b> {1}'.format(m,l)
+                    msg_send(user, msg,flock_client)
 
     else:
         errmsg = {"text":"The parsenip slash command is missing the DEPLOY parameter"}
