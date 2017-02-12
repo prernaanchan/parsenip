@@ -92,3 +92,4 @@ ENV/
 
 # Config file ignores
 config.json
+*.har
