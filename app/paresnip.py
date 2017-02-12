@@ -12,7 +12,7 @@ flock_secret = None
 flock_url = None
 
 try:
-    with open('config.json') as data_file:    
+    with open('config.json') as data_file:
         data = json.load(data_file)
     # flock creds
     flock_key = data['flock_key']
@@ -31,7 +31,7 @@ def msg_send(msg, client):
     simple_message = Message(to='u:0zhuh09zwttmuwhx',text=msg)
     # returns a message id
     res = flock_client.send_chat(simple_message)
-    print(res)      
+    print(res)
 
 def check_har(file):
   all_errors = []
@@ -135,18 +135,18 @@ def process():
             # Run the Check against the HAR file
             # On Error post back to Flock with error
 
-            # File Check 
+            # File Check
             report = check_har('/bad.har')
             for r in report:
                 if type(r) == dict:
                     m = r['message']
                     l = str(r['location'])
-                    msg += 'Issue Detected: {0} \n Detail: {1}\n'.format(m,l)
+                    msg += '<strong>Issue Detected:</strong> {0} <br> <strong>Detail:</strong> {1}\n'.format(m,l)
             msg_send(msg,flock_client)
 
     else:
         errmsg = {"text":"The parsenip slash command is missing the DEPLOY parameter"}
-    
+
     return jsonify(errmsg)
 
 if __name__ == "__main__":
