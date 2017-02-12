@@ -22,15 +22,11 @@ try:
 except IOError as e:
       print "[error] "+e.message
 
-
 flock_client = FlockClient(token=flock_secret, app_id=flock_key)
-
-# flock_client = FlockClient(token='', app_id='bca434b5-8727-4661-846f-efc3d0d84af5')
 
 def msg_send(usr, msg, client):
     views = Views()
-    views.add_flockml('<flockml>{0}<\flockml>'.format(msg))
-    
+    views.add_flockml('<flockml>{0}<\flockml>'.format(msg))    
     attachment = Attachment(title="Deploy Test Results", description="", views=views)    
     simple_message = Message(to=usr, attachments=[attachment])
     # returns a message id
@@ -122,7 +118,6 @@ def check_security(page):
 
 #Create an instance of flask
 app = Flask(__name__)
-
 @app.route("/")
 def index():
     return 'Hello World'
