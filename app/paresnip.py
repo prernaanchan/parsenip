@@ -5,6 +5,22 @@ from flask import jsonify, request, json
 from git import Repo
 
 
+flock_key = None
+flock_secret = None
+flock_url = None
+
+try:
+    with open('config.json') as data_file:    
+        data = json.load(data_file)
+    # flock creds
+    flock_key = data['flock_key']
+    flock_secret = data['flock_key']
+    flock_url = data['flock_url']
+
+except IOError as e:
+      print "[error] "+e.message
+
+
 #Create an instance of flask
 app = Flask(__name__)
 
