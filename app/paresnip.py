@@ -141,7 +141,7 @@ def process():
                 if type(r) == dict:
                     m = r['message']
                     l = str(r['location'])
-                    msg += <flockml><b>'Issue Detected:'</b> {0} <br> <b>'Detail:'</b> {1}<br></flockml>.format(m,l)
+                    msg += '<flockml><b>Issue Detected:</b> {0} <br> <b>Detail:</b> {1}<br></flockml'.format(m,l)
             msg_send(msg,flock_client)
 
     else:
