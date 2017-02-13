@@ -8,8 +8,6 @@
 # docker run -itd -p 80:80 --name parsenip parsenip /bin/bash
 
 FROM php:7.0-apache
-MAINTAINER "Angel Rivera" <arivera@point.io>
-
 RUN apt-get -y update
 RUN apt-get install -y git nano wget
 
